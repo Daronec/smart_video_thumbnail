@@ -1,0 +1,72 @@
+# Build outputs
+example/build/
+example/android/build/
+example/android/.gradle/
+example/android/.kotlin/
+example/ios/build/
+example/.dart_tool/
+example/.flutter-plugins-dependencies
+
+# Development documentation
+AFTER_FIX_CHECKLIST.md
+ALTERNATIVE_CREDENTIALS.md
+CHECKLIST.md
+CHECK_CREDENTIALS.md
+CHECK_PACKAGE_COORDINATES.md
+CLEANUP_NATIVE_FILES.md
+CREATE_JNI_BRIDGE.md
+DEBUG_PACKAGE_ACCESS.md
+FINAL_SOLUTION.md
+FINAL_STATUS.md
+FIX_BUILD_ERROR.md
+FIX_JNI_IMPLEMENTATION.md
+FIX_JNI_METHODS.md
+FIX_LIBRARY_INSTRUCTIONS.md
+FIX_PACKAGE_ACCESS.md
+GITHUB_PACKAGES_SETUP.md
+LIBRARY_NAME_FIX.md
+LIBRARY_NAME_MISMATCH_ISSUE.md
+MIGRATION.md
+MIGRATION_COMPLETE.md
+MIGRATION_COMPLETE_CHECKLIST.md
+MIGRATION_STATUS_FINAL.md
+MIGRATION_SUCCESS.md
+MIGRATION_TO_GITHUB_PACKAGES.md
+PUBLICATION_CHECKLIST.md
+PUBLISH_TO_GITHUB_PACKAGES.md
+QUICK_FIX_NOW.md
+READY_TO_BUILD.md
+SMART_FFMPEG_ANDROID_CREATED.md
+SUCCESS_FINAL.md
+SUMMARY.md
+TEST_V1.0.4.md
+USE_LOCAL_AAR.md
+WAIT_FOR_PUBLISH.md
+PROJECT_COMPLETE.md
+
+# Batch scripts
+check_package_access.bat
+cleanup_native.bat
+download_aar.bat
+fix_aar_library_name.bat
+test_after_publish.bat
+test_github_packages.bat
+
+# Test directories
+test-github-package/
+
+# Archives
+*.zip
+
+# Android local properties
+android/local.properties
+example/android/local.properties
+
+# Gradle wrapper jar
+android/gradle/wrapper/gradle-wrapper.jar
+example/android/gradle/wrapper/gradle-wrapper.jar
+
+# IDE files
+.idea/
+.vscode/
+*.iml

@@ -1,0 +1,121 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Android build outputs
+android/.gradle/
+android/.kotlin/
+android/build/
+android/app/build/
+android/local.properties
+android/gradle/wrapper/gradle-wrapper.jar
+
+# Example app build outputs
+example/build/
+example/android/.gradle/
+example/android/.kotlin/
+example/android/build/
+example/android/app/build/
+example/android/local.properties
+example/ios/build/
+example/.dart_tool/
+example/.flutter-plugins-dependencies
+
+# Development documentation (keep only essential docs)
+AFTER_FIX_CHECKLIST.md
+ALTERNATIVE_CREDENTIALS.md
+CHECKLIST.md
+CHECK_CREDENTIALS.md
+CHECK_PACKAGE_COORDINATES.md
+CLEANUP_NATIVE_FILES.md
+CREATE_JNI_BRIDGE.md
+DEBUG_PACKAGE_ACCESS.md
+FINAL_SOLUTION.md
+FINAL_STATUS.md
+FIX_BUILD_ERROR.md
+FIX_JNI_IMPLEMENTATION.md
+FIX_JNI_METHODS.md
+FIX_LIBRARY_INSTRUCTIONS.md
+FIX_PACKAGE_ACCESS.md
+GITHUB_PACKAGES_SETUP.md
+LIBRARY_NAME_FIX.md
+LIBRARY_NAME_MISMATCH_ISSUE.md
+MIGRATION.md
+MIGRATION_COMPLETE.md
+MIGRATION_COMPLETE_CHECKLIST.md
+MIGRATION_STATUS_FINAL.md
+MIGRATION_SUCCESS.md
+MIGRATION_TO_GITHUB_PACKAGES.md
+PUBLICATION_CHECKLIST.md
+PUBLISH_TO_GITHUB_PACKAGES.md
+QUICK_FIX_NOW.md
+READY_TO_BUILD.md
+SMART_FFMPEG_ANDROID_CREATED.md
+SUCCESS_FINAL.md
+SUMMARY.md
+TEST_V1.0.4.md
+USE_LOCAL_AAR.md
+WAIT_FOR_PUBLISH.md
+PROJECT_COMPLETE.md
+
+# Batch scripts
+check_package_access.bat
+cleanup_native.bat
+download_aar.bat
+fix_aar_library_name.bat
+test_after_publish.bat
+test_github_packages.bat
+GITHUB_SETUP.bat
+
+# Test directories
+test-github-package/
+
+# Archives
+*.zip
+*.tar.gz
+*.aar
+
+# Gradle credentials (IMPORTANT: Never commit these!)
+gradle.properties
+local.properties
