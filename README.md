@@ -16,6 +16,8 @@ A powerful Flutter plugin for generating video thumbnails using native FFmpeg en
 
 <p align="center"><i>Example app showing video thumbnails in a grid layout</i></p>
 
+> **Note:** If the screenshot doesn't appear, please visit the [assets folder](https://github.com/Daronec/smart_video_thumbnail/tree/main/assets) to view it directly.
+
 ---
 
 ## ✨ Features
