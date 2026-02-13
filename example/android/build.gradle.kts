@@ -3,13 +3,9 @@ allprojects {
         google()
         mavenCentral()
         
-        // GitHub Packages - smart-ffmpeg-android
+        // JitPack - smart-ffmpeg-android (no credentials required!)
         maven {
-            url = uri("https://maven.pkg.github.com/Daronec/smart-ffmpeg-android")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_KEY")
-            }
+            url = uri("https://jitpack.io")
         }
     }
 }

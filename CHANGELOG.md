@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-02-13
+
+### 🎉 Changed
+
+- **Simplified Installation:** Switched from GitHub Packages to JitPack for native library distribution
+- **No Credentials Required:** Users no longer need GitHub Personal Access Tokens
+- **Easier Setup:** Removed the need for `~/.gradle/gradle.properties` configuration
+
+### 📦 Technical Changes
+
+- Updated native library dependency from `com.smartmedia:smart-ffmpeg-android` to `com.github.Daronec:smart-ffmpeg-android`
+- Changed repository from GitHub Packages to JitPack (`https://jitpack.io`)
+- Native library now automatically downloads on first build
+
+### 🔄 Migration Guide
+
+If you're upgrading from v0.1.0:
+
+1. **Remove GitHub credentials** from `~/.gradle/gradle.properties` (no longer needed)
+2. **Clean build cache:**
+   ```bash
+   flutter clean
+   cd example && flutter clean
+   ```
+3. **Update dependency:**
+   ```yaml
+   dependencies:
+     smart_video_thumbnail: ^0.1.1
+   ```
+4. **Rebuild:**
+   ```bash
+   flutter pub get
+   flutter build apk
+   ```
+
+The plugin will now automatically download the native library from JitPack on first build.
+
+### ✅ Benefits
+
+- ✅ No GitHub account or token required
+- ✅ Simpler installation process
+- ✅ Works out of the box after `flutter pub get`
+- ✅ Standard Android library distribution method
+
 ## [0.1.0] - 2026-02-13
 
 ### 🎉 Initial Release

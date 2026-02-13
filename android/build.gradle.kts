@@ -10,13 +10,9 @@ repositories {
     google()
     mavenCentral()
     
-    // GitHub Packages - smart-ffmpeg-android
+    // JitPack - smart-ffmpeg-android (no credentials required!)
     maven {
-        url = uri("https://maven.pkg.github.com/Daronec/smart-ffmpeg-android")
-        credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-            password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_KEY")
-        }
+        url = uri("https://jitpack.io")
     }
 }
 
@@ -53,6 +49,6 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
     
-    // Smart FFmpeg Android Library v1.0.4 с JNI методами
-    implementation("com.smartmedia:smart-ffmpeg-android:1.0.4")
+    // Smart FFmpeg Android Library v1.0.4 from JitPack
+    implementation("com.github.Daronec:smart-ffmpeg-android:1.0.4")
 }

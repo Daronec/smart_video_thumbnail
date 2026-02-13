@@ -42,16 +42,9 @@ flutter pub get
 
 ### Android Setup
 
-Add GitHub Packages credentials to access the native FFmpeg library.
+No additional setup required! The plugin automatically downloads the native FFmpeg library from JitPack.
 
-Create or edit `~/.gradle/gradle.properties`:
-
-```properties
-gpr.user=YOUR_GITHUB_USERNAME
-gpr.key=YOUR_GITHUB_TOKEN
-```
-
-> **Note:** You need a GitHub Personal Access Token with `read:packages` permission. [Create one here](https://github.com/settings/tokens/new?scopes=read:packages)
+> **Note:** The first build may take a bit longer as Gradle downloads the native library (~8MB).
 
 ---
 
