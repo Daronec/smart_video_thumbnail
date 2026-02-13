@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'src/cache/thumbnail_cache.dart';
+import 'src/models/cache_stats.dart';
+import 'src/progress/progress_handler.dart';
+
+export 'src/models/cache_stats.dart';
 
 /// Стратегия извлечения кадра
 enum ThumbnailStrategy {
@@ -21,6 +26,7 @@ enum ThumbnailStrategy {
 /// Поддерживает все форматы, которые поддерживает FFmpeg (MP4, AVI, MKV, FLV, и т.д.)
 class SmartVideoThumbnail {
   static const MethodChannel _channel = MethodChannel('smart_video_thumbnail');
+  static final ThumbnailCache _cache = ThumbnailCache();
 
   /// Получить thumbnail для видео
   ///
@@ -30,6 +36,8 @@ class SmartVideoThumbnail {
   /// [height] - высота thumbnail (по умолчанию вычисляется как 16:9 от width)
   /// [size] - альтернативный способ задать размер (используется если width не указан)
   /// [strategy] - стратегия извлечения кадра
+  /// [useCache] - использовать кэширование (по умолчанию true)
+  /// [onProgress] - callback для получения прогресса генерации (опционально)
   ///
   /// Возвращает [Uint8List] с RGBA данными или null при ошибке
   ///
@@ -40,6 +48,10 @@ class SmartVideoThumbnail {
   ///   timeMs: 1000,
   ///   width: 320,
   ///   height: 180,
+  ///   useCache: true,
+  ///   onProgress: (progress) {
+  ///     print('Progress: ${(progress * 100).toInt()}%');
+  ///   },
   /// );
   ///
   /// if (thumbnail != null) {
@@ -54,11 +66,69 @@ class SmartVideoThumbnail {
     int? height,
     int size = 720,
     ThumbnailStrategy strategy = ThumbnailStrategy.normal,
+    bool useCache = true,
+    void Function(double progress)? onProgress,
   }) async {
+    String? requestId;
+    StreamSubscription<double>? progressSubscription;
+
     try {
       final effectiveWidth = width ?? size;
       final effectiveHeight = height ?? (size * 9 ~/ 16);
 
+      // Check cache if enabled
+      if (useCache) {
+        final cacheKey = _cache.generateKey(
+          videoPath,
+          timeMs,
+          effectiveWidth,
+          effectiveHeight,
+          strategy.name,
+        );
+
+        final cachedData = await _cache.get(cacheKey);
+        if (cachedData != null) {
+          if (kDebugMode) {
+            debugPrint('✅ SmartVideoThumbnail: Cache hit for $cacheKey');
+          }
+
+          // For cache hits, immediately report 100% progress
+          if (onProgress != null) {
+            onProgress(1.0);
+          }
+
+          return cachedData;
+        }
+      }
+
+      // Setup progress tracking if callback provided
+      if (onProgress != null) {
+        requestId = ProgressHandler.generateRequestId();
+        final progressStream = ProgressHandler.getProgressStream(requestId);
+
+        progressSubscription = progressStream.listen(
+          (progress) {
+            try {
+              onProgress(progress);
+            } catch (e) {
+              if (kDebugMode) {
+                debugPrint(
+                  '⚠️ SmartVideoThumbnail: Progress callback error: $e',
+                );
+              }
+            }
+          },
+          onError: (error) {
+            if (kDebugMode) {
+              debugPrint(
+                '⚠️ SmartVideoThumbnail: Progress stream error: $error',
+              );
+            }
+          },
+        );
+      }
+
+      // Generate thumbnail
       final result = await _channel.invokeMethod<Uint8List>('getThumbnail', {
         'path': videoPath,
         'timeMs': timeMs,
@@ -66,7 +136,26 @@ class SmartVideoThumbnail {
         'height': effectiveHeight,
         'size': size,
         'strategy': strategy.name,
+        if (requestId != null) 'requestId': requestId,
       });
+
+      // Store in cache if enabled and generation succeeded
+      if (useCache && result != null) {
+        final cacheKey = _cache.generateKey(
+          videoPath,
+          timeMs,
+          effectiveWidth,
+          effectiveHeight,
+          strategy.name,
+        );
+
+        // Cache asynchronously without waiting
+        _cache.put(cacheKey, result).catchError((e) {
+          if (kDebugMode) {
+            debugPrint('⚠️ SmartVideoThumbnail: Failed to cache: $e');
+          }
+        });
+      }
 
       return result;
     } on PlatformException catch (e) {
@@ -81,6 +170,12 @@ class SmartVideoThumbnail {
         debugPrint('❌ SmartVideoThumbnail: Unexpected error: $e');
       }
       return null;
+    } finally {
+      // Clean up progress tracking
+      if (requestId != null) {
+        await progressSubscription?.cancel();
+        ProgressHandler.cancelProgress(requestId);
+      }
     }
   }
 
@@ -101,6 +196,75 @@ class SmartVideoThumbnail {
         return true;
       }
       return false;
+    }
+  }
+
+  /// Очистить весь кэш миниатюр
+  ///
+  /// Удаляет все закэшированные миниатюры из файловой системы.
+  ///
+  /// Пример использования:
+  /// ```dart
+  /// await SmartVideoThumbnail.clearCache();
+  /// ```
+  static Future<void> clearCache() async {
+    try {
+      await _cache.clear();
+      if (kDebugMode) {
+        debugPrint('✅ SmartVideoThumbnail: Cache cleared');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ SmartVideoThumbnail: Failed to clear cache: $e');
+      }
+      rethrow;
+    }
+  }
+
+  /// Удалить закэшированные миниатюры для конкретного видео
+  ///
+  /// [videoPath] - путь к видеофайлу
+  ///
+  /// Удаляет все миниатюры, созданные для указанного видео,
+  /// независимо от параметров генерации.
+  ///
+  /// Пример использования:
+  /// ```dart
+  /// await SmartVideoThumbnail.removeCacheForVideo('/path/to/video.mp4');
+  /// ```
+  static Future<void> removeCacheForVideo(String videoPath) async {
+    try {
+      await _cache.removeByVideoPath(videoPath);
+      if (kDebugMode) {
+        debugPrint('✅ SmartVideoThumbnail: Cache removed for $videoPath');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ SmartVideoThumbnail: Failed to remove cache: $e');
+      }
+      rethrow;
+    }
+  }
+
+  /// Получить статистику кэша
+  ///
+  /// Возвращает [CacheStats] с информацией о количестве файлов,
+  /// общем размере и отформатированном размере.
+  ///
+  /// Пример использования:
+  /// ```dart
+  /// final stats = await SmartVideoThumbnail.getCacheStats();
+  /// print('Cached files: ${stats.fileCount}');
+  /// print('Total size: ${stats.formattedSize}');
+  /// ```
+  static Future<CacheStats> getCacheStats() async {
+    try {
+      return await _cache.getCacheStats();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ SmartVideoThumbnail: Failed to get cache stats: $e');
+      }
+      rethrow;
     }
   }
 }

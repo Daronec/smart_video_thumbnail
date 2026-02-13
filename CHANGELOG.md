@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-02-13
+
+### 🎉 Added
+
+- **Thumbnail Caching:** Automatic file-based caching system for generated thumbnails
+  - Cache thumbnails to avoid regeneration
+  - Persistent cache across app restarts
+  - Cache management methods: `clearCache()`, `removeCacheForVideo()`, `getCacheStats()`
+  - Optional `useCache` parameter (default: true)
+- **Progress Callbacks:** Real-time progress updates during thumbnail generation
+  - Optional `onProgress` callback parameter
+  - Progress values from 0.0 to 1.0
+  - Instant 100% progress for cache hits
+- **Usage Examples:** Comprehensive code examples
+  - ListView example with thumbnails
+  - GridView example with caching
+  - Cache management example with statistics
+
+### 🔧 Changed
+
+- **Library Size Optimization:** Reduced APK size by supporting ARM architectures only
+  - Supports: arm64-v8a, armeabi-v7a
+  - Excludes: x86, x86_64
+  - Clear error message for unsupported architectures
+- **API Enhancements:** Extended `getThumbnail` method
+  - Added `useCache` parameter (default: true)
+  - Added `onProgress` callback parameter (optional)
+  - Backward compatible with v0.1.1
+
+### 📦 New Dependencies
+
+- `path_provider: ^2.1.0` - For cache directory access
+- `crypto: ^3.0.3` - For cache key generation
+- `uuid: ^4.0.0` - For progress request tracking
+
+### 📚 Documentation
+
+- Updated README with caching and progress examples
+- Added comprehensive API documentation
+- Added architecture support information
+
+### ✅ Benefits
+
+- ✅ Faster thumbnail loading with caching
+- ✅ Better user experience with progress feedback
+- ✅ Smaller APK size (ARM-only builds)
+- ✅ Backward compatible with v0.1.1
+
 ## [0.1.1] - 2026-02-13
 
 ### 🎉 Changed

@@ -1,6 +1,6 @@
 name: smart_video_thumbnail
 description: High-performance Flutter plugin for extracting video thumbnails using native FFmpeg engine. Supports all video formats (MP4, AVI, MKV, FLV, etc.) with CPU-only decoding.
-version: 0.1.1
+version: 0.2.0
 homepage: https://github.com/Daronec/smart_video_thumbnail
 repository: https://github.com/Daronec/smart_video_thumbnail
 issue_tracker: https://github.com/Daronec/smart_video_thumbnail/issues
@@ -24,6 +24,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  path_provider: ^2.1.0
+  crypto: ^3.0.3
+  path: ^1.9.0
+  uuid: ^4.0.0
 
 dev_dependencies:
   flutter_test:

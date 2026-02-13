@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ru.pathcreator.smart.video.thumbnails"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     google()
@@ -33,6 +33,9 @@ android {
         minSdk = 21
         targetSdk = 34
 
+        // v0.2.0: Optimized for ARM architectures only to reduce APK size
+        // Excludes x86 and x86_64 architectures
+        // Supported: arm64-v8a (64-bit ARM), armeabi-v7a (32-bit ARM)
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))

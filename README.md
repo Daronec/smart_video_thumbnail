@@ -21,9 +21,12 @@ _Example app showing video thumbnails in a grid layout_
 - 🎬 **Native FFmpeg** - Uses CPU-only decoding for maximum compatibility
 - 📦 **All Formats** - Supports MP4, AVI, MKV, FLV, WMV and other FFmpeg formats
 - 🚀 **Fast** - Optimized frame extraction with minimal overhead
+- 💾 **Caching** - Automatic thumbnail caching for better performance (v0.2.0)
+- 📊 **Progress** - Real-time progress callbacks during generation (v0.2.0)
 - 🎯 **Flexible** - Multiple seek strategies (normal, keyframe, firstFrame)
 - 🔧 **Independent** - No dependency on MediaMetadataRetriever or system APIs
 - 💪 **Reliable** - Works with corrupted or unusual video files
+- 📱 **Optimized** - ARM-only builds for smaller APK size (v0.2.0)
 
 ## 📦 Installation
 
@@ -31,7 +34,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  smart_video_thumbnail: ^0.1.0
+  smart_video_thumbnail: ^0.2.0
 ```
 
 Then run:
