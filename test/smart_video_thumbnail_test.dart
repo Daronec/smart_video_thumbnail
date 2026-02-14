@@ -11,22 +11,22 @@ void main() {
     setUp(() {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-            if (methodCall.method == 'getThumbnail') {
-              final args = methodCall.arguments as Map;
+        if (methodCall.method == 'getThumbnail') {
+          final args = methodCall.arguments as Map;
 
-              // Validate arguments
-              if (args['path'] == null || args['path'] == '') {
-                throw PlatformException(
-                  code: 'BAD_ARGS',
-                  message: 'Invalid path',
-                );
-              }
+          // Validate arguments
+          if (args['path'] == null || args['path'] == '') {
+            throw PlatformException(
+              code: 'BAD_ARGS',
+              message: 'Invalid path',
+            );
+          }
 
-              // Return mock thumbnail data (1x1 RGBA pixel)
-              return Uint8List.fromList([255, 0, 0, 255]); // Red pixel
-            }
-            return null;
-          });
+          // Return mock thumbnail data (1x1 RGBA pixel)
+          return Uint8List.fromList([255, 0, 0, 255]); // Red pixel
+        }
+        return null;
+      });
     });
 
     tearDown(() {

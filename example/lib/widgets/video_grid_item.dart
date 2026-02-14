@@ -22,15 +22,15 @@ class VideoGridItem extends StatelessWidget {
                     child: const Center(child: CircularProgressIndicator()),
                   )
                 : video.thumbnail != null
-                ? RawImage(image: video.thumbnail, fit: BoxFit.cover)
-                : Container(
-                    color: Colors.grey[300],
-                    child: const Icon(
-                      Icons.video_library,
-                      size: 48,
-                      color: Colors.grey,
-                    ),
-                  ),
+                    ? RawImage(image: video.thumbnail, fit: BoxFit.cover)
+                    : Container(
+                        color: Colors.grey[300],
+                        child: const Icon(
+                          Icons.video_library,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
+                      ),
           ),
           Positioned(
             top: 4,

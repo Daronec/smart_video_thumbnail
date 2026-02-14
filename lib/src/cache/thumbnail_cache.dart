@@ -43,10 +43,8 @@ class ThumbnailCache {
   ) {
     // Generate MD5 hash of video path
     final videoPathBytes = utf8.encode(videoPath);
-    final videoPathHash = md5
-        .convert(videoPathBytes)
-        .toString()
-        .substring(0, 16);
+    final videoPathHash =
+        md5.convert(videoPathBytes).toString().substring(0, 16);
 
     // Format: {hash}_{timeMs}_{width}x{height}_{strategy}.rgba
     return '${videoPathHash}_${timeMs}_${width}x${height}_$strategy.rgba';
@@ -113,10 +111,8 @@ class ThumbnailCache {
 
       // Generate hash prefix for this video
       final videoPathBytes = utf8.encode(videoPath);
-      final videoPathHash = md5
-          .convert(videoPathBytes)
-          .toString()
-          .substring(0, 16);
+      final videoPathHash =
+          md5.convert(videoPathBytes).toString().substring(0, 16);
 
       // Delete all files starting with this hash
       await for (final entity in cacheDir.list()) {

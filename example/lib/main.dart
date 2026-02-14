@@ -119,11 +119,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: const EdgeInsets.all(8),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 16 / 9,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                            ),
+                          crossAxisCount: 2,
+                          childAspectRatio: 16 / 9,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
                         itemCount: state.videos.length,
                         itemBuilder: (context, index) {
                           final video = state.videos[index];

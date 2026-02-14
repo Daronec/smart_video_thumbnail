@@ -92,9 +92,8 @@ class AppController {
   }
 
   void _removeVideo(String videoId) {
-    final updatedVideos = _state.videos
-        .where((video) => video.id != videoId)
-        .toList();
+    final updatedVideos =
+        _state.videos.where((video) => video.id != videoId).toList();
 
     _updateState(_state.copyWith(videos: updatedVideos));
   }
