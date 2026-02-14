@@ -1,0 +1,284 @@
+# Implementation Plan: Multi-Platform Support
+
+## Overview
+
+This implementation plan extends the smart_video_thumbnail Flutter plugin to support iOS, Windows, Linux, macOS, and Web platforms. The implementation follows a platform-by-platform approach, starting with iOS (most similar to existing Android), then desktop platforms (Windows/Linux with FFmpeg), macOS (similar to iOS), and finally Web. Each platform implementation includes the native bridge, error handling, and integration with the existing Dart API and caching system.
+
+## Tasks
+
+- [ ] 1. Update plugin configuration for multi-platform support
+  - Update `pubspec.yaml` to declare all platform implementations
+  - Add platform-specific plugin class declarations (iOS, macOS, Windows, Linux, Web)
+  - Update plugin version to 0.3.0
+  - _Requirements: 13.1, 13.2, 13.5, 13.6_
+
+- [ ] 2. Implement iOS platform support
+  - [ ] 2.1 Create iOS plugin structure and registration
+    - Create `ios/Classes/SwiftSmartVideoThumbnailPlugin.swift`
+    - Implement `FlutterPlugin` protocol and method channel registration
+    - Set up progress event channel for iOS
+    - _Requirements: 1.1, 1.2_
+  - [ ] 2.2 Implement AVFoundation frame extraction
+    - Create `AVAssetFrameExtractor` class
+    - Implement frame extraction using `AVAssetImageGenerator`
+    - Configure time tolerance based on strategy (normal, keyframe, firstFrame)
+    - Handle asset loading and error cases
+    - _Requirements: 1.1, 1.2, 1.5, 1.6, 1.7_
+  - [ ] 2.3 Implement RGBA8888 conversion for iOS
+    - Create `CGImage` to RGBA8888 conversion function
+    - Use `CGContext` for pixel format conversion
+    - Ensure output dimensions match requested size
+    - _Requirements: 1.3_
+  - [ ] 2.4 Implement iOS error handling
+    - Handle file not found errors
+    - Handle unsupported format errors
+    - Handle extraction failures
+    - Return standardized error codes
+    - _Requirements: 1.4, 9.1, 9.2, 9.5_
+  - [ ] 2.5 Implement iOS progress reporting
+    - Send progress updates at key stages (asset loading, seeking, extraction, conversion)
+    - Integrate with Flutter progress event channel
+    - Handle progress callback errors gracefully
+    - _Requirements: 8.1, 8.2, 8.3, 8.5, 8.6_
+  - [ ]\* 2.6 Write property tests for iOS implementation
+    - **Property 1: Output Dimensions Consistency**
+    - **Validates: Requirements 1.3**
+    - **Property 3: Strategy Support**
+    - **Validates: Requirements 1.5**
+    - **Property 4: Invalid Path Error Handling**
+    - **Validates: Requirements 1.4**
+  - [ ]\* 2.7 Write unit tests for iOS-specific functionality
+    - Test AVFoundation format support (MP4, MOV, M4V)
+    - Test firstFrame strategy behavior
+    - Test error scenarios
+    - _Requirements: 14.2, 14.5_
+
+- [ ] 3. Implement macOS platform support
+  - [ ] 3.1 Create macOS plugin structure
+    - Create `macos/Classes/SmartVideoThumbnailPlugin.swift`
+    - Implement `FlutterPlugin` protocol for macOS
+    - Set up method channel and progress channel
+    - _Requirements: 4.1, 4.2_
+  - [ ] 3.2 Adapt iOS implementation for macOS
+    - Reuse AVFoundation frame extraction logic
+    - Handle macOS-specific file URL schemes
+    - Adjust for macOS plugin registration differences
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
+  - [ ]\* 3.3 Write property tests for macOS implementation
+    - **Property 1: Output Dimensions Consistency**
+    - **Validates: Requirements 4.3**
+    - **Property 3: Strategy Support**
+    - **Validates: Requirements 4.4**
+  - [ ]\* 3.4 Write unit tests for macOS-specific functionality
+    - Test file URL handling
+    - Test AVFoundation format support
+    - _Requirements: 14.2_
+
+- [ ] 4. Checkpoint - Ensure Apple platform tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement Windows platform support
+  - [ ] 5.1 Create Windows plugin structure
+    - Create `windows/smart_video_thumbnail_plugin.cpp` and `.h`
+    - Implement `flutter::Plugin` interface
+    - Set up method channel registration
+    - _Requirements: 2.1, 2.2, 2.4_
+  - [ ] 5.2 Implement FFmpeg integration for Windows
+    - Create `FFmpegThumbnailGenerator` class
+    - Implement video file opening with `avformat_open_input`
+    - Implement codec initialization with `avcodec_find_decoder` and `avcodec_open2`
+    - Implement frame seeking with `av_seek_frame`
+    - Implement frame decoding with `avcodec_receive_frame`
+    - _Requirements: 2.1, 2.2, 2.7_
+  - [ ] 5.3 Implement RGBA8888 conversion for Windows
+    - Use `sws_scale` for pixel format conversion and resizing
+    - Ensure output is RGBA8888 format
+    - Handle memory allocation and cleanup
+    - _Requirements: 2.3_
+  - [ ] 5.4 Implement Windows FFmpeg library loading
+    - Implement dynamic library loading for FFmpeg DLLs
+    - Bundle FFmpeg libraries with plugin
+    - Provide clear error if libraries are missing
+    - _Requirements: 2.6, 13.3_
+  - [ ] 5.5 Implement Windows error handling
+    - Handle file not found errors
+    - Handle FFmpeg library missing errors
+    - Handle codec not found errors
+    - Handle extraction failures
+    - _Requirements: 2.6, 9.1, 9.2, 9.3, 9.5_
+  - [ ] 5.6 Implement Windows progress reporting
+    - Send progress updates at key stages (file open, codec init, seeking, decoding, scaling)
+    - Integrate with Flutter progress event channel
+    - _Requirements: 8.1, 8.2, 8.3, 8.5_
+  - [ ]\* 5.7 Write property tests for Windows implementation
+    - **Property 1: Output Dimensions Consistency**
+    - **Validates: Requirements 2.3**
+    - **Property 3: Strategy Support**
+    - **Validates: Requirements 2.5**
+    - **Property 4: Invalid Path Error Handling**
+    - **Validates: Requirements 2.6**
+  - [ ]\* 5.8 Write unit tests for Windows-specific functionality
+    - Test FFmpeg library detection
+    - Test various video formats (MP4, AVI, MKV, FLV)
+    - Test error scenarios
+    - _Requirements: 14.2, 14.5_
+
+- [ ] 6. Implement Linux platform support
+  - [ ] 6.1 Create Linux plugin structure
+    - Create `linux/smart_video_thumbnail_plugin.cc` and `.h`
+    - Implement `flutter::Plugin` interface
+    - Set up method channel registration
+    - _Requirements: 3.1, 3.2, 3.4_
+  - [ ] 6.2 Adapt Windows FFmpeg implementation for Linux
+    - Reuse FFmpeg thumbnail generation logic
+    - Implement Linux-specific library loading (dlopen)
+    - Detect system FFmpeg libraries first, fall back to bundled
+    - _Requirements: 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 13.4_
+  - [ ] 6.3 Implement Linux error handling
+    - Handle file not found errors
+    - Handle FFmpeg library missing errors
+    - Handle codec errors
+    - _Requirements: 3.6, 9.1, 9.2, 9.3_
+  - [ ]\* 6.4 Write property tests for Linux implementation
+    - **Property 1: Output Dimensions Consistency**
+    - **Validates: Requirements 3.3**
+    - **Property 3: Strategy Support**
+    - **Validates: Requirements 3.5**
+  - [ ]\* 6.5 Write unit tests for Linux-specific functionality
+    - Test system FFmpeg library detection
+    - Test various video formats
+    - _Requirements: 14.2_
+
+- [ ] 7. Checkpoint - Ensure desktop platform tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Implement Web platform support
+  - [ ] 8.1 Create Web plugin structure
+    - Create `web/smart_video_thumbnail_web.dart`
+    - Implement platform interface registration
+    - Set up method channel for Web
+    - _Requirements: 5.1, 5.2, 5.4_
+  - [ ] 8.2 Implement HTML5 video frame extraction
+    - Create `VideoFrameExtractor` class
+    - Create `VideoElement` and load video
+    - Implement seeking to target time
+    - Handle video load and seek events
+    - _Requirements: 5.1, 5.2, 5.7_
+  - [ ] 8.3 Implement canvas-based RGBA8888 conversion
+    - Create `CanvasElement` with target dimensions
+    - Draw video frame to canvas
+    - Extract `ImageData` from canvas
+    - Convert to RGBA8888 format
+    - _Requirements: 5.3_
+  - [ ] 8.4 Implement Web strategy handling
+    - Implement normal strategy (standard seeking)
+    - Implement firstFrame strategy (seek to 0)
+    - Implement keyframe fallback to normal
+    - _Requirements: 5.5, 5.6_
+  - [ ] 8.5 Implement Web error handling
+    - Handle video load failures
+    - Handle CORS errors with clear messaging
+    - Handle unsupported format errors
+    - Handle canvas rendering errors
+    - _Requirements: 5.8, 9.1, 9.2_
+  - [ ] 8.6 Implement Web progress reporting
+    - Send progress updates at key stages (loading, seeking, rendering)
+    - Integrate with Flutter progress mechanism
+    - _Requirements: 8.1, 8.2, 8.3, 8.5_
+  - [ ]\* 8.7 Write property tests for Web implementation
+    - **Property 1: Output Dimensions Consistency**
+    - **Validates: Requirements 5.3**
+    - **Property 3: Strategy Support**
+    - **Validates: Requirements 5.5**
+    - **Property 5: Unsupported Format Error Handling**
+    - **Validates: Requirements 5.8**
+  - [ ]\* 8.8 Write unit tests for Web-specific functionality
+    - Test browser format support (MP4, WebM)
+    - Test CORS scenarios
+    - Test keyframe fallback behavior
+    - _Requirements: 14.2, 14.5_
+
+- [ ] 9. Implement cross-platform consistency tests
+  - [ ]\* 9.1 Write cross-platform dimension consistency tests
+    - **Property 2: Cross-Platform Dimension Agreement**
+    - **Validates: Requirements 6.2**
+  - [ ]\* 9.2 Write API compatibility tests
+    - **Property 18: API Method Signature Consistency**
+    - **Validates: Requirements 6.1, 6.3**
+  - [ ]\* 9.3 Write cross-platform error handling tests
+    - **Property 19: Error Return Consistency**
+    - **Validates: Requirements 6.4**
+
+- [ ] 10. Implement cache system tests for all platforms
+  - [ ]\* 10.1 Write cache key consistency tests
+    - **Property 7: Cache Key Consistency**
+    - **Validates: Requirements 7.2**
+  - [ ]\* 10.2 Write cache storage and retrieval tests
+    - **Property 8: Cache Storage and Retrieval**
+    - **Validates: Requirements 7.1, 7.3**
+  - [ ]\* 10.3 Write cache clearing tests
+    - **Property 9: Cache Clearing**
+    - **Validates: Requirements 7.4**
+  - [ ]\* 10.4 Write video-specific cache removal tests
+    - **Property 10: Video-Specific Cache Removal**
+    - **Validates: Requirements 7.5**
+  - [ ]\* 10.5 Write cache stats accuracy tests
+    - **Property 11: Cache Stats Accuracy**
+    - **Validates: Requirements 7.6**
+  - [ ]\* 10.6 Write cache failure resilience tests
+    - **Property 12: Cache Failure Resilience**
+    - **Validates: Requirements 7.7**
+
+- [ ] 11. Implement progress callback tests for all platforms
+  - [ ]\* 11.1 Write progress callback range tests
+    - **Property 13: Progress Callback Range**
+    - **Validates: Requirements 8.1**
+  - [ ]\* 11.2 Write progress callback completion tests
+    - **Property 14: Progress Callback Completion**
+    - **Validates: Requirements 8.3**
+  - [ ]\* 11.3 Write cached thumbnail progress tests
+    - **Property 15: Cached Thumbnail Progress**
+    - **Validates: Requirements 8.4**
+  - [ ]\* 11.4 Write progress callback frequency tests
+    - **Property 16: Progress Callback Frequency**
+    - **Validates: Requirements 8.5**
+  - [ ]\* 11.5 Write progress callback exception handling tests
+    - **Property 17: Progress Callback Exception Handling**
+    - **Validates: Requirements 8.6**
+
+- [ ] 12. Update documentation and examples
+  - [ ] 12.1 Update README.md with multi-platform support information
+    - Add platform support table
+    - Document platform-specific requirements
+    - Add platform-specific usage examples
+    - Document format support per platform
+    - _Requirements: 10.4, 11.7_
+  - [ ] 12.2 Update example app for multi-platform testing
+    - Ensure example app runs on all platforms
+    - Add platform detection and display
+    - Add format compatibility information
+    - _Requirements: 10.4_
+  - [ ] 12.3 Update CHANGELOG.md
+    - Document v0.3.0 changes
+    - List all new platform support
+    - Note any breaking changes (if any)
+    - _Requirements: 10.4_
+  - [ ] 12.4 Create platform-specific documentation
+    - Document iOS/macOS AVFoundation requirements
+    - Document Windows/Linux FFmpeg requirements
+    - Document Web browser compatibility
+    - Document build configuration for each platform
+    - _Requirements: 10.4, 11.7, 13.2, 13.3, 13.4, 13.5, 13.6_
+
+- [ ] 13. Final checkpoint - Comprehensive testing
+  - Ensure all tests pass on all platforms, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Platform implementations should be done in order: iOS → macOS → Windows → Linux → Web
+- This order allows reusing code patterns (iOS/macOS share AVFoundation, Windows/Linux share FFmpeg)
+- Property tests validate universal correctness properties across all platforms
+- Unit tests validate platform-specific behavior and edge cases
+- Cross-platform tests ensure API consistency and behavior parity
