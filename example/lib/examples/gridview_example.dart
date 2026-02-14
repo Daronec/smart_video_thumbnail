@@ -11,7 +11,7 @@ import 'dart:typed_data';
 class GridViewExample extends StatefulWidget {
   final List<String> videoPaths;
 
-  const GridViewExample({Key? key, required this.videoPaths}) : super(key: key);
+  const GridViewExample({super.key, required this.videoPaths});
 
   @override
   State<GridViewExample> createState() => _GridViewExampleState();
@@ -75,10 +75,10 @@ class VideoThumbnailGridItem extends StatefulWidget {
   final int index;
 
   const VideoThumbnailGridItem({
-    Key? key,
+    super.key,
     required this.videoPath,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoThumbnailGridItem> createState() => _VideoThumbnailGridItemState();

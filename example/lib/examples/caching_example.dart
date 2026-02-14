@@ -11,7 +11,7 @@ import 'package:smart_video_thumbnail/smart_video_thumbnail.dart';
 class CachingExample extends StatefulWidget {
   final String videoPath;
 
-  const CachingExample({Key? key, required this.videoPath}) : super(key: key);
+  const CachingExample({super.key, required this.videoPath});
 
   @override
   State<CachingExample> createState() => _CachingExampleState();

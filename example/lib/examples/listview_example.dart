@@ -11,7 +11,7 @@ import 'dart:typed_data';
 class ListViewExample extends StatefulWidget {
   final List<String> videoPaths;
 
-  const ListViewExample({Key? key, required this.videoPaths}) : super(key: key);
+  const ListViewExample({super.key, required this.videoPaths});
 
   @override
   State<ListViewExample> createState() => _ListViewExampleState();
@@ -40,10 +40,10 @@ class VideoThumbnailListItem extends StatefulWidget {
   final int index;
 
   const VideoThumbnailListItem({
-    Key? key,
+    super.key,
     required this.videoPath,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   State<VideoThumbnailListItem> createState() => _VideoThumbnailListItemState();
