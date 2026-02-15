@@ -52,6 +52,6 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
     
-    // Smart FFmpeg Android Library v1.0.4 from JitPack
-    implementation("com.github.Daronec:smart-ffmpeg-android:1.0.4")
+    // Smart FFmpeg Android Library v1.0.6 from JitPack
+    implementation("com.github.Daronec:smart-ffmpeg-android:1.0.6")
 }
