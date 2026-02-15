@@ -22,6 +22,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Setup AndroidX for example app
+        run: |
+          cp example/android/gradle.properties.template example/android/gradle.properties
+        shell: bash
+
       - name: Verify formatting
         run: dart format --set-exit-if-changed .
 
