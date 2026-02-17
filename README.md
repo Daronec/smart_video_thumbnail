@@ -49,6 +49,32 @@ No additional setup required! The plugin automatically downloads the native FFmp
 
 > **Note:** The first build may take a bit longer as Gradle downloads the native library (~8MB).
 
+### iOS Setup
+
+No additional setup required! The plugin uses native AVFoundation framework for video processing.
+
+> **Note:** Make sure your app has the necessary permissions in Info.plist:
+>
+> ```xml
+> <key>NSPhotoLibraryUsageDescription</key>
+> <string>This app needs access to your photo library to select videos.</string>
+> ```
+>
+> **Implementation Note:** iOS version uses AVFoundation instead of FFmpeg for better system integration and smaller binary size.
+
+### macOS Setup
+
+No additional setup required! The plugin uses native AVFoundation framework for video processing.
+
+> **Note:** Make sure your app has the necessary entitlements for file access:
+>
+> - `com.apple.security.files.user-selected.read-only`
+> - `com.apple.security.files.user-selected.read-write`
+>
+> These are required for accessing video files selected by the user.
+>
+> **Implementation Note:** macOS version uses AVFoundation instead of FFmpeg for better system integration and smaller binary size.
+
 ---
 
 ## 🚀 Usage
@@ -168,10 +194,14 @@ The plugin returns `Uint8List` with **RGBA8888** format:
 
 ## 📱 Platform Support
 
-| Platform | Status         | Architectures          |
-| -------- | -------------- | ---------------------- |
-| Android  | ✅ Supported   | arm64-v8a, armeabi-v7a |
-| iOS      | ⏳ Coming Soon | -                      |
+| Platform | Status       | Architectures          |
+| -------- | ------------ | ---------------------- |
+| Android  | ✅ Supported | arm64-v8a, armeabi-v7a |
+| iOS      | ✅ Supported | arm64, armv7           |
+| macOS    | ✅ Supported | x86_64, arm64          |
+| Windows  | ✅ Supported | x64                    |
+| Web      | ✅ Supported | All browsers           |
+| macOS    | ✅ Supported | x86_64, arm64          |
 
 ## 📋 Requirements
 
@@ -182,6 +212,18 @@ The plugin returns `Uint8List` with **RGBA8888** format:
 - **NDK:** r21 or higher
 - **CMake:** 3.18.1 or higher
 - **FFmpeg:** Included in plugin (v4.4.2)
+
+### iOS
+
+- **Deployment Target:** iOS 12.0 or higher
+- **Xcode:** 12.0 or higher
+- **Video Processing:** Native AVFoundation framework
+
+### macOS
+
+- **Deployment Target:** 10.14 or higher
+- **Xcode:** 12.0 or higher
+- **Video Processing:** Native AVFoundation framework
 
 ---
 

@@ -5,7 +5,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smart_video_thumbnail/smart_video_thumbnail.dart';
 
+/// Сервис для работы с видео файлами и генерации миниатюр.
+/// 
+/// Предоставляет функциональность для выбора видео файлов
+/// и генерации их миниатюр с использованием SmartVideoThumbnail.
 class VideoService {
+  /// Запрашивает разрешения на доступ к видео файлам.
+  /// 
+  /// Возвращает `true` если разрешение получено, иначе `false`.
   Future<bool> requestPermissions() async {
     if (await Permission.videos.isGranted) {
       return true;
@@ -20,6 +27,10 @@ class VideoService {
     return status.isGranted;
   }
 
+  /// Открывает диалог выбора видео файла.
+  /// 
+  /// Возвращает путь к выбранному файлу или `null` если выбор отменен.
+  /// Выбрасывает исключение если нет разрешения на доступ к видео.
   Future<String?> pickVideo() async {
     try {
       final hasPermission = await requestPermissions();
@@ -41,6 +52,12 @@ class VideoService {
     }
   }
 
+  /// Генерирует миниатюру для видео файла.
+  /// 
+  /// Параметры:
+  /// - [videoPath]: Путь к видео файлу
+  /// 
+  /// Возвращает [ui.Image] миниатюры или `null` при ошибке.
   Future<ui.Image?> generateThumbnail(String videoPath) async {
     try {
       final thumbnail = await SmartVideoThumbnail.getThumbnail(

@@ -129,6 +129,14 @@ class SmartVideoThumbnail {
       }
 
       // Generate thumbnail
+      if (kDebugMode) {
+        debugPrint('🎬 SmartVideoThumbnail: Calling native getThumbnail');
+        debugPrint('   videoPath: $videoPath');
+        debugPrint('   timeMs: $timeMs');
+        debugPrint('   size: ${effectiveWidth}x$effectiveHeight');
+        debugPrint('   strategy: ${strategy.name}');
+      }
+
       final result = await _channel.invokeMethod<Uint8List>('getThumbnail', {
         'path': videoPath,
         'timeMs': timeMs,
@@ -138,6 +146,14 @@ class SmartVideoThumbnail {
         'strategy': strategy.name,
         if (requestId != null) 'requestId': requestId,
       });
+
+      if (kDebugMode) {
+        if (result != null) {
+          debugPrint('✅ SmartVideoThumbnail: Native call succeeded, received ${result.length} bytes');
+        } else {
+          debugPrint('⚠️ SmartVideoThumbnail: Native call returned null');
+        }
+      }
 
       // Store in cache if enabled and generation succeeded
       if (useCache && result != null) {
@@ -161,8 +177,12 @@ class SmartVideoThumbnail {
     } on PlatformException catch (e) {
       if (kDebugMode) {
         debugPrint(
-          '❌ SmartVideoThumbnail: Error getting thumbnail: ${e.code} - ${e.message}',
+          '❌ SmartVideoThumbnail: PlatformException: ${e.code} - ${e.message}',
         );
+        if (e.details != null) {
+          debugPrint('   Details: ${e.details}');
+        }
+        debugPrint('   Stack trace: ${e.stacktrace}');
       }
       return null;
     } catch (e) {

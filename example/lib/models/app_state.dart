@@ -1,5 +1,6 @@
 import 'video_item.dart';
 
+/// Состояние приложения, содержащее список видео и флаги UI.
 class AppState {
   final List<VideoItem> videos;
   final bool isPickingVideo;
@@ -7,6 +8,7 @@ class AppState {
 
   AppState({this.videos = const [], this.isPickingVideo = false, this.error});
 
+  /// Создает копию состояния с измененными полями.
   AppState copyWith({
     List<VideoItem>? videos,
     bool? isPickingVideo,

@@ -5,6 +5,103 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-16
+
+### 🎉 Added
+
+- **iOS Platform Support:** Full implementation for iOS mobile devices
+  - Native AVFoundation framework integration
+  - Support for arm64 and armv7 architectures
+  - No external dependencies required (uses system frameworks)
+  - Smaller binary size compared to Android (no FFmpeg library)
+- **iOS Example App:** Added iOS platform to example application
+  - Photo library permissions configured in Info.plist
+  - Full feature parity with Android and macOS versions
+- **Documentation:** Comprehensive iOS implementation guide
+  - Setup instructions
+  - Architecture overview
+  - Performance benchmarks
+  - Troubleshooting guide
+  - Platform comparison
+
+### 🔧 Changed
+
+- **Platform Support:** Extended from Android + macOS to Android + iOS + macOS
+- **README:** Updated with iOS setup and requirements
+- **Architecture:** Documented multi-backend approach (FFmpeg for Android, AVFoundation for iOS/macOS)
+
+### 📦 Technical Details
+
+- **iOS Backend:** AVFoundation (Swift)
+- **Minimum iOS Version:** 12.0
+- **Required Permissions:**
+  - `NSPhotoLibraryUsageDescription` - For accessing photo library
+  - `NSPhotoLibraryAddUsageDescription` - For saving thumbnails (optional)
+- **Supported Formats:** All system-supported codecs (MP4, MOV, M4V, etc.)
+
+### ✅ Benefits
+
+- ✅ Full cross-platform support (Android + iOS + macOS)
+- ✅ Native performance on all platforms
+- ✅ Consistent API across platforms
+- ✅ No external dependencies on iOS/macOS
+- ✅ Smaller binary size on iOS/macOS
+
+### 📚 New Documentation
+
+- `IOS_GUIDE.md` - Complete iOS implementation guide
+- Updated README with iOS platform information
+- iOS-specific troubleshooting section
+- iOS unit tests
+
+## [0.3.0] - 2026-02-16
+
+### 🎉 Added
+
+- **macOS Platform Support:** Full implementation for macOS desktop
+  - Native AVFoundation framework integration
+  - Support for x86_64 and arm64 (Apple Silicon) architectures
+  - No external dependencies required (uses system frameworks)
+  - Smaller binary size compared to Android (no FFmpeg library)
+- **macOS Example App:** Added macOS platform to example application
+  - File access entitlements configured
+  - Full feature parity with Android version
+- **Documentation:** Comprehensive macOS implementation guide
+  - Setup instructions
+  - Architecture overview
+  - Performance benchmarks
+  - Troubleshooting guide
+  - Platform comparison
+
+### 🔧 Changed
+
+- **Platform Support:** Extended from Android-only to Android + macOS
+- **README:** Updated with macOS setup and requirements
+- **Architecture:** Documented dual-backend approach (FFmpeg for Android, AVFoundation for macOS)
+
+### 📦 Technical Details
+
+- **macOS Backend:** AVFoundation (Swift)
+- **Minimum macOS Version:** 10.14 (Mojave)
+- **Required Entitlements:**
+  - `com.apple.security.files.user-selected.read-only`
+  - `com.apple.security.files.user-selected.read-write`
+- **Supported Formats:** All system-supported codecs (MP4, MOV, M4V, etc.)
+
+### ✅ Benefits
+
+- ✅ Cross-platform support (Android + macOS)
+- ✅ Native performance on both platforms
+- ✅ Consistent API across platforms
+- ✅ No external dependencies on macOS
+- ✅ Smaller binary size on macOS
+
+### 📚 New Documentation
+
+- `MACOS_GUIDE.md` - Complete macOS implementation guide
+- Updated README with platform comparison
+- macOS-specific troubleshooting section
+
 ## [0.2.0] - 2026-02-13
 
 ### 🎉 Added

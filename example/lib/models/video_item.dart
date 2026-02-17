@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+/// Модель элемента видео с метаданными и миниатюрой.
 class VideoItem {
   final String id;
   final String path;
@@ -15,6 +16,7 @@ class VideoItem {
     this.isLoading = false,
   });
 
+  /// Создает копию видео элемента с измененными полями.
   VideoItem copyWith({
     String? id,
     String? path,

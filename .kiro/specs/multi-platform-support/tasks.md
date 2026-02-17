@@ -12,30 +12,30 @@ This implementation plan extends the smart_video_thumbnail Flutter plugin to sup
   - Update plugin version to 0.3.0
   - _Requirements: 13.1, 13.2, 13.5, 13.6_
 
-- [ ] 2. Implement iOS platform support
-  - [ ] 2.1 Create iOS plugin structure and registration
+- [x] 2. Implement iOS platform support
+  - [x] 2.1 Create iOS plugin structure and registration
     - Create `ios/Classes/SwiftSmartVideoThumbnailPlugin.swift`
     - Implement `FlutterPlugin` protocol and method channel registration
     - Set up progress event channel for iOS
     - _Requirements: 1.1, 1.2_
-  - [ ] 2.2 Implement AVFoundation frame extraction
+  - [x] 2.2 Implement AVFoundation frame extraction
     - Create `AVAssetFrameExtractor` class
     - Implement frame extraction using `AVAssetImageGenerator`
     - Configure time tolerance based on strategy (normal, keyframe, firstFrame)
     - Handle asset loading and error cases
     - _Requirements: 1.1, 1.2, 1.5, 1.6, 1.7_
-  - [ ] 2.3 Implement RGBA8888 conversion for iOS
+  - [x] 2.3 Implement RGBA8888 conversion for iOS
     - Create `CGImage` to RGBA8888 conversion function
     - Use `CGContext` for pixel format conversion
     - Ensure output dimensions match requested size
     - _Requirements: 1.3_
-  - [ ] 2.4 Implement iOS error handling
+  - [x] 2.4 Implement iOS error handling
     - Handle file not found errors
     - Handle unsupported format errors
     - Handle extraction failures
     - Return standardized error codes
     - _Requirements: 1.4, 9.1, 9.2, 9.5_
-  - [ ] 2.5 Implement iOS progress reporting
+  - [x] 2.5 Implement iOS progress reporting
     - Send progress updates at key stages (asset loading, seeking, extraction, conversion)
     - Integrate with Flutter progress event channel
     - Handle progress callback errors gracefully
@@ -53,13 +53,13 @@ This implementation plan extends the smart_video_thumbnail Flutter plugin to sup
     - Test error scenarios
     - _Requirements: 14.2, 14.5_
 
-- [ ] 3. Implement macOS platform support
-  - [ ] 3.1 Create macOS plugin structure
+- [x] 3. Implement macOS platform support
+  - [x] 3.1 Create macOS plugin structure
     - Create `macos/Classes/SmartVideoThumbnailPlugin.swift`
     - Implement `FlutterPlugin` protocol for macOS
     - Set up method channel and progress channel
     - _Requirements: 4.1, 4.2_
-  - [ ] 3.2 Adapt iOS implementation for macOS
+  - [x] 3.2 Adapt iOS implementation for macOS
     - Reuse AVFoundation frame extraction logic
     - Handle macOS-specific file URL schemes
     - Adjust for macOS plugin registration differences
@@ -77,36 +77,36 @@ This implementation plan extends the smart_video_thumbnail Flutter plugin to sup
 - [ ] 4. Checkpoint - Ensure Apple platform tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement Windows platform support
-  - [ ] 5.1 Create Windows plugin structure
+- [x] 5. Implement Windows platform support
+  - [x] 5.1 Create Windows plugin structure
     - Create `windows/smart_video_thumbnail_plugin.cpp` and `.h`
     - Implement `flutter::Plugin` interface
     - Set up method channel registration
     - _Requirements: 2.1, 2.2, 2.4_
-  - [ ] 5.2 Implement FFmpeg integration for Windows
+  - [x] 5.2 Implement FFmpeg integration for Windows
     - Create `FFmpegThumbnailGenerator` class
     - Implement video file opening with `avformat_open_input`
     - Implement codec initialization with `avcodec_find_decoder` and `avcodec_open2`
     - Implement frame seeking with `av_seek_frame`
     - Implement frame decoding with `avcodec_receive_frame`
     - _Requirements: 2.1, 2.2, 2.7_
-  - [ ] 5.3 Implement RGBA8888 conversion for Windows
+  - [x] 5.3 Implement RGBA8888 conversion for Windows
     - Use `sws_scale` for pixel format conversion and resizing
     - Ensure output is RGBA8888 format
     - Handle memory allocation and cleanup
     - _Requirements: 2.3_
-  - [ ] 5.4 Implement Windows FFmpeg library loading
+  - [x] 5.4 Implement Windows FFmpeg library loading
     - Implement dynamic library loading for FFmpeg DLLs
     - Bundle FFmpeg libraries with plugin
     - Provide clear error if libraries are missing
     - _Requirements: 2.6, 13.3_
-  - [ ] 5.5 Implement Windows error handling
+  - [x] 5.5 Implement Windows error handling
     - Handle file not found errors
     - Handle FFmpeg library missing errors
     - Handle codec not found errors
     - Handle extraction failures
     - _Requirements: 2.6, 9.1, 9.2, 9.3, 9.5_
-  - [ ] 5.6 Implement Windows progress reporting
+  - [x] 5.6 Implement Windows progress reporting
     - Send progress updates at key stages (file open, codec init, seeking, decoding, scaling)
     - Integrate with Flutter progress event channel
     - _Requirements: 8.1, 8.2, 8.3, 8.5_
@@ -152,36 +152,36 @@ This implementation plan extends the smart_video_thumbnail Flutter plugin to sup
 - [ ] 7. Checkpoint - Ensure desktop platform tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Implement Web platform support
-  - [ ] 8.1 Create Web plugin structure
+- [x] 8. Implement Web platform support
+  - [x] 8.1 Create Web plugin structure
     - Create `web/smart_video_thumbnail_web.dart`
     - Implement platform interface registration
     - Set up method channel for Web
     - _Requirements: 5.1, 5.2, 5.4_
-  - [ ] 8.2 Implement HTML5 video frame extraction
+  - [x] 8.2 Implement HTML5 video frame extraction
     - Create `VideoFrameExtractor` class
     - Create `VideoElement` and load video
     - Implement seeking to target time
     - Handle video load and seek events
     - _Requirements: 5.1, 5.2, 5.7_
-  - [ ] 8.3 Implement canvas-based RGBA8888 conversion
+  - [x] 8.3 Implement canvas-based RGBA8888 conversion
     - Create `CanvasElement` with target dimensions
     - Draw video frame to canvas
     - Extract `ImageData` from canvas
     - Convert to RGBA8888 format
     - _Requirements: 5.3_
-  - [ ] 8.4 Implement Web strategy handling
+  - [x] 8.4 Implement Web strategy handling
     - Implement normal strategy (standard seeking)
     - Implement firstFrame strategy (seek to 0)
     - Implement keyframe fallback to normal
     - _Requirements: 5.5, 5.6_
-  - [ ] 8.5 Implement Web error handling
+  - [x] 8.5 Implement Web error handling
     - Handle video load failures
     - Handle CORS errors with clear messaging
     - Handle unsupported format errors
     - Handle canvas rendering errors
     - _Requirements: 5.8, 9.1, 9.2_
-  - [ ] 8.6 Implement Web progress reporting
+  - [x] 8.6 Implement Web progress reporting
     - Send progress updates at key stages (loading, seeking, rendering)
     - Integrate with Flutter progress mechanism
     - _Requirements: 8.1, 8.2, 8.3, 8.5_

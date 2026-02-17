@@ -4,6 +4,10 @@ import '../models/video_item.dart';
 import '../intent/app_intent.dart';
 import '../services/video_service.dart';
 
+/// Контроллер приложения, управляющий состоянием и бизнес-логикой.
+/// 
+/// Обрабатывает пользовательские намерения (intents) и обновляет состояние
+/// приложения через reactive stream.
 class AppController {
   final VideoService _videoService;
   final _stateController = StreamController<AppState>.broadcast();
@@ -15,6 +19,7 @@ class AppController {
 
   AppController(this._videoService);
 
+  /// Обрабатывает пользовательское намерение и выполняет соответствующее действие.
   void handleIntent(AppIntent intent) {
     switch (intent) {
       case PickVideoIntent():
@@ -65,30 +70,22 @@ class AppController {
   Future<void> _generateThumbnail(String videoId, String videoPath) async {
     try {
       final thumbnail = await _videoService.generateThumbnail(videoPath);
-
-      final updatedVideos = _state.videos.map((video) {
-        if (video.id == videoId) {
-          return video.copyWith(thumbnail: thumbnail, isLoading: false);
-        }
-        return video;
-      }).toList();
-
-      _updateState(_state.copyWith(videos: updatedVideos));
+      _updateVideoById(videoId, (video) => video.copyWith(
+        thumbnail: thumbnail,
+        isLoading: false,
+      ));
     } catch (e) {
-      final updatedVideos = _state.videos.map((video) {
-        if (video.id == videoId) {
-          return video.copyWith(isLoading: false);
-        }
-        return video;
-      }).toList();
-
-      _updateState(
-        _state.copyWith(
-          videos: updatedVideos,
-          error: 'Ошибка генерации обложки: $e',
-        ),
-      );
+      _updateVideoById(videoId, (video) => video.copyWith(isLoading: false));
+      _updateState(_state.copyWith(error: 'Ошибка генерации обложки: $e'));
     }
+  }
+
+  /// Обновляет конкретное видео по ID, применяя функцию трансформации.
+  void _updateVideoById(String videoId, VideoItem Function(VideoItem) transform) {
+    final updatedVideos = _state.videos.map((video) {
+      return video.id == videoId ? transform(video) : video;
+    }).toList();
+    _updateState(_state.copyWith(videos: updatedVideos));
   }
 
   void _removeVideo(String videoId) {
@@ -107,6 +104,7 @@ class AppController {
     _stateController.add(_state);
   }
 
+  /// Освобождает ресурсы контроллера.
   void dispose() {
     _stateController.close();
   }

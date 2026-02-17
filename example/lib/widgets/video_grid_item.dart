@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/video_item.dart';
 
+/// Виджет элемента сетки видео с миниатюрой и кнопкой удаления.
 class VideoGridItem extends StatelessWidget {
   final VideoItem video;
   final VoidCallback onRemove;
