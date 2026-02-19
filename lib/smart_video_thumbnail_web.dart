@@ -50,9 +50,14 @@ class SmartVideoThumbnailWeb {
 
       // Create video element
       final video = html.VideoElement()
-        ..crossOrigin = 'anonymous'
         ..preload = 'metadata'
-        ..style.display = 'none';
+        ..style.display = 'none'
+        ..muted = true; // Mute для автоплея
+
+      // Не устанавливаем crossOrigin для Blob URLs
+      if (!videoPath.startsWith('blob:')) {
+        video.crossOrigin = 'anonymous';
+      }
 
       // Add to DOM temporarily
       html.document.body?.append(video);
@@ -60,17 +65,36 @@ class SmartVideoThumbnailWeb {
       try {
         // Load video
         final completer = Completer<void>();
+        StreamSubscription? metadataSubscription;
+        StreamSubscription? errorSubscription;
         
         void onLoadedMetadata(html.Event event) {
-          completer.complete();
+          if (kDebugMode) {
+            print('✅ SmartVideoThumbnail Web: Video metadata loaded');
+            print('   Duration: ${video.duration}s');
+            print('   Video size: ${video.videoWidth}x${video.videoHeight}');
+          }
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
         }
 
         void onError(html.Event event) {
-          completer.completeError('Failed to load video');
+          if (kDebugMode) {
+            print('❌ SmartVideoThumbnail Web: Video error event');
+            print('   Error: ${video.error?.code} - ${video.error?.message}');
+            print('   Network state: ${video.networkState}');
+            print('   Ready state: ${video.readyState}');
+          }
+          if (!completer.isCompleted) {
+            completer.completeError(
+              'Failed to load video: ${video.error?.message ?? "Unknown error"}'
+            );
+          }
         }
 
-        video.onLoadedMetadata.listen(onLoadedMetadata);
-        video.onError.listen(onError);
+        metadataSubscription = video.onLoadedMetadata.listen(onLoadedMetadata);
+        errorSubscription = video.onError.listen(onError);
 
         video.src = videoPath;
         video.load();
@@ -79,27 +103,44 @@ class SmartVideoThumbnailWeb {
         await completer.future.timeout(
           const Duration(seconds: 10),
           onTimeout: () {
-            throw TimeoutException('Video loading timeout');
+            throw TimeoutException('Video loading timeout after 10 seconds');
           },
         );
 
+        // Clean up listeners
+        await metadataSubscription.cancel();
+        await errorSubscription.cancel();
+
         // Seek to desired time
         final seekCompleter = Completer<void>();
+        StreamSubscription? seekedSubscription;
         
         void onSeeked(html.Event event) {
-          seekCompleter.complete();
+          if (kDebugMode) {
+            print('✅ SmartVideoThumbnail Web: Seek completed to ${video.currentTime}s');
+          }
+          if (!seekCompleter.isCompleted) {
+            seekCompleter.complete();
+          }
         }
 
-        video.onSeeked.listen(onSeeked);
-        video.currentTime = timeMs / 1000.0; // Convert to seconds
+        seekedSubscription = video.onSeeked.listen(onSeeked);
+        
+        final seekTimeSeconds = timeMs / 1000.0;
+        if (kDebugMode) {
+          print('🔍 SmartVideoThumbnail Web: Seeking to ${seekTimeSeconds}s');
+        }
+        video.currentTime = seekTimeSeconds;
 
         // Wait for seek to complete
         await seekCompleter.future.timeout(
           const Duration(seconds: 5),
           onTimeout: () {
-            throw TimeoutException('Video seek timeout');
+            throw TimeoutException('Video seek timeout after 5 seconds');
           },
         );
+
+        await seekedSubscription.cancel();
 
         // Create canvas to capture frame
         final canvas = html.CanvasElement(width: width, height: height);
@@ -127,9 +168,10 @@ class SmartVideoThumbnailWeb {
         // Clean up
         video.remove();
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       if (kDebugMode) {
         print('❌ SmartVideoThumbnail Web: Error: $e');
+        print('   Stack trace: $stackTrace');
       }
       return null;
     }

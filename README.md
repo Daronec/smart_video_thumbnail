@@ -194,14 +194,166 @@ The plugin returns `Uint8List` with **RGBA8888** format:
 
 ## 📱 Platform Support
 
-| Platform | Status       | Architectures          |
-| -------- | ------------ | ---------------------- |
-| Android  | ✅ Supported | arm64-v8a, armeabi-v7a |
-| iOS      | ✅ Supported | arm64, armv7           |
-| macOS    | ✅ Supported | x86_64, arm64          |
-| Windows  | ✅ Supported | x64                    |
-| Web      | ✅ Supported | All browsers           |
-| macOS    | ✅ Supported | x86_64, arm64          |
+| Platform | Status       | Architectures          | Backend          |
+| -------- | ------------ | ---------------------- | ---------------- |
+| Android  | ✅ Supported | arm64-v8a, armeabi-v7a | FFmpeg 4.4.2     |
+| iOS      | ✅ Supported | arm64, armv7           | AVFoundation     |
+| macOS    | ✅ Supported | x86_64, arm64          | AVFoundation     |
+| Windows  | ✅ Supported | x64                    | Media Foundation |
+| Web      | ✅ Supported | All browsers           | HTML5 Video      |
+
+### Supported Video Formats by Platform
+
+#### 🤖 Android (FFmpeg)
+
+**Supports all FFmpeg-compatible formats:**
+
+- ✅ **Container formats:** MP4, AVI, MKV, FLV, WMV, MOV, 3GP, WebM, OGG, and more
+- ✅ **Video codecs:** H.264, H.265/HEVC, MPEG-4, VP8, VP9, Theora, WMV, DivX, Xvid, and more
+- ✅ **Audio codecs:** AAC, MP3, Vorbis, Opus, WMA, FLAC, and more
+
+**Note:** FFmpeg provides the most comprehensive format support across all platforms.
+
+#### 🍎 iOS (AVFoundation)
+
+**Supports system-native formats:**
+
+- ✅ **Container formats:** MP4, MOV, M4V, 3GP
+- ✅ **Video codecs:** H.264, H.265/HEVC, MPEG-4
+- ✅ **Audio codecs:** AAC, MP3, Apple Lossless
+
+**Limitations:**
+
+- ❌ AVI, MKV, FLV, WMV - not supported (requires FFmpeg)
+- ⚠️ Smaller binary size (~2MB vs ~8MB on Android)
+- ⚠️ Better battery efficiency due to hardware acceleration
+
+#### 🖥️ macOS (AVFoundation)
+
+**Supports system-native formats:**
+
+- ✅ **Container formats:** MP4, MOV, M4V, 3GP
+- ✅ **Video codecs:** H.264, H.265/HEVC, MPEG-4, ProRes
+- ✅ **Audio codecs:** AAC, MP3, Apple Lossless, FLAC
+
+**Limitations:**
+
+- ❌ AVI, MKV, FLV, WMV - not supported (requires FFmpeg)
+- ⚠️ Smaller binary size compared to FFmpeg
+- ⚠️ Better performance due to hardware acceleration
+
+#### 🪟 Windows (Media Foundation)
+
+**Supports Windows-native formats:**
+
+- ✅ **Container formats:** MP4, AVI, WMV, ASF
+- ✅ **Video codecs:** H.264, H.265/HEVC, MPEG-4, WMV
+- ✅ **Audio codecs:** AAC, MP3, WMA
+
+**Limitations:**
+
+- ❌ MKV, FLV - limited support
+- ⚠️ Format support depends on installed codecs
+
+#### 🌐 Web (HTML5 Video)
+
+**Supports browser-native formats only:**
+
+- ✅ **MP4** (H.264/AAC) - Best compatibility, supported by all modern browsers
+- ✅ **WebM** (VP8/VP9/Vorbis/Opus) - Good support in Chrome, Firefox, Edge
+- ✅ **Ogg** (Theora/Vorbis) - Supported in Firefox, Chrome
+
+**Limitations:**
+
+- ❌ **AVI, WMV, FLV, MKV** - NOT supported (no browser codecs)
+- ⚠️ Format support varies by browser
+- ⚠️ Requires video file to be loaded into memory
+- 💡 **Recommendation:** Use MP4 (H.264) for maximum compatibility
+
+**Browser Compatibility:**
+
+| Format | Chrome | Firefox | Safari | Edge |
+| ------ | ------ | ------- | ------ | ---- |
+| MP4    | ✅     | ✅      | ✅     | ✅   |
+| WebM   | ✅     | ✅      | ❌     | ✅   |
+| Ogg    | ✅     | ✅      | ❌     | ❌   |
+| AVI    | ❌     | ❌      | ❌     | ❌   |
+| WMV    | ❌     | ❌      | ❌     | ❌   |
+
+### Format Recommendations
+
+**For maximum cross-platform compatibility:**
+
+- 🎯 **Primary:** MP4 (H.264 video + AAC audio)
+- 🎯 **Alternative:** WebM (VP9 video + Opus audio) for web
+
+**For Android-only apps:**
+
+- 🎯 Use any format - FFmpeg supports everything
+
+**For iOS/macOS apps:**
+
+- 🎯 Stick to MP4, MOV, M4V formats
+- 🎯 Use H.264 or H.265 codecs
+
+**For web apps:**
+
+- 🎯 **Must use:** MP4 (H.264) - only reliable option
+- ⚠️ Convert AVI/WMV/FLV to MP4 before using
+
+---
+
+## 🔧 Working with Unsupported Formats
+
+If you need to work with formats not natively supported on your platform (e.g., AVI on iOS, WMV on Web), you have several options:
+
+### Option 1: Convert to MP4 (Recommended)
+
+**Using FFmpeg CLI:**
+
+```bash
+ffmpeg -i input.avi -c:v libx264 -c:a aac output.mp4
+```
+
+**Using ffmpeg_kit_flutter in your app:**
+
+```dart
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+
+Future<String?> convertToMp4(String inputPath) async {
+  final outputPath = inputPath.replaceAll(RegExp(r'\.\w+$'), '.mp4');
+  await FFmpegKit.execute('-i "$inputPath" -c:v libx264 -c:a aac "$outputPath"');
+  return outputPath;
+}
+
+// Then use the converted file
+final mp4Path = await convertToMp4('/path/to/video.avi');
+if (mp4Path != null) {
+  final thumbnail = await SmartVideoThumbnail.getThumbnail(
+    videoPath: mp4Path,
+  );
+}
+```
+
+### Option 2: Future FFmpeg Extension (Coming Soon)
+
+We're planning an optional `smart_video_thumbnail_ffmpeg` package that will add support for all formats on iOS/macOS:
+
+```yaml
+dependencies:
+  smart_video_thumbnail: ^0.4.0
+  smart_video_thumbnail_ffmpeg: ^1.0.0 # Optional, adds +20MB
+```
+
+**Note:** This will increase app size by ~20-30 MB but provide full format support.
+
+### Option 3: Server-Side Conversion (For Web)
+
+For web applications, consider converting videos on your server before sending to clients.
+
+📚 **For detailed solutions and recommendations, see [UNSUPPORTED_FORMATS_SOLUTION.md](UNSUPPORTED_FORMATS_SOLUTION.md)**
+
+---
 
 ## 📋 Requirements
 
